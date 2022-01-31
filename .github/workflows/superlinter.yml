@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        working-directory: java/exercises
+        working-directory: exercises/java
         
       - name: Run Super-Linter
         uses: github/super-linter@v3
