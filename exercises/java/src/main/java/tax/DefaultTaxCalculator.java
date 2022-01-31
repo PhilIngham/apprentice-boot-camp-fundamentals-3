@@ -3,6 +3,9 @@ package tax;
 public class DefaultTaxCalculator extends TaxCalculator {
     @Override
     int calculateTax(Vehicle vehicle) {
+        if (vehicle.getFuelType().equals(FuelType.ALTERNATIVE_FUEL)) {
+            return calculateTaxAlternativeFuel(vehicle.getCo2Emissions());
+        }
         int co2Emissions = vehicle.getCo2Emissions();
         switch (vehicle.getFuelType()) {
             case PETROL:
@@ -63,5 +66,36 @@ public class DefaultTaxCalculator extends TaxCalculator {
                 }
             default: return 0;
         }
+    }
+
+    public int calculateTaxAlternativeFuel(int co2Emissions) {
+        int tax;
+        if (co2Emissions > 255) {
+            tax = 2060;
+        } else if (co2Emissions > 225) {
+            tax = 1750;
+        } else if (co2Emissions > 190) {
+            tax = 1230;
+        } else if (co2Emissions > 170) {
+            tax = 820;
+        } else if (co2Emissions > 150) {
+            tax = 505;
+        } else if (co2Emissions > 130) {
+            tax = 195;
+        } else if (co2Emissions > 110) {
+            tax = 155;
+        } else if (co2Emissions > 100) {
+            tax = 135;
+        } else if (co2Emissions > 90) {
+            tax = 115;
+        } else if (co2Emissions > 75) {
+            tax = 95;
+        } else if (co2Emissions > 50) {
+            tax = 15;
+        } else  {
+            tax = 0;
+        }
+
+        return tax;
     }
 }
