@@ -1,6 +1,6 @@
 package tax;
 
-public class PetrolTaxCalculator extends TaxCalculator {
+public class DefaultTaxCalculator extends TaxCalculator {
     @Override
     int calculateTax(Vehicle vehicle) {
         int co2Emissions = vehicle.getCo2Emissions();
