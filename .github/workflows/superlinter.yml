@@ -9,6 +9,7 @@ jobs:
     steps:
       - name: Checkout code
         working-directory: exercises/java
+        run: actions/checkout@v2
         
       - name: Run Super-Linter
         uses: github/super-linter@v3
