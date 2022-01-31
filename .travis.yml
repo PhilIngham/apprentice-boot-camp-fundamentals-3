@@ -1,4 +1,2 @@
-language: node_js
-before_install: "cd exercises/javascript"
-node_js:
-  - 10
+language: java
+before_script: "cd exercises/java"
