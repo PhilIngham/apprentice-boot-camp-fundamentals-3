@@ -10,47 +10,80 @@ public class DefaultTaxCalculator extends TaxCalculator {
         super();
     }
 
-    public DefaultTaxCalculator(int year){
+    public DefaultTaxCalculator(int year) {
         super(year);
     }
 
-    public DefaultTaxCalculator(boolean story4Toggle, boolean story5Toggle) {
-        super();
+    public DefaultTaxCalculator(int year, boolean story4Toggle, boolean story5Toggle) {
+        super(year);
         this.story4Toggle = story4Toggle;
         this.story5Toggle = story5Toggle;
     }
 
     @Override
     int calculateTax(Vehicle vehicle) {
+        int tax;
 
-        int tax = 0;
-        int co2Emissions = vehicle.getCo2Emissions();
-        if(this.getYear() == vehicle.getDateOfFirstRegistration().getYear()){
-            switch (vehicle.getFuelType()) {
-                case PETROL:
-                    tax += calculateTaxPetrol(co2Emissions);
-                    break;
-                case DIESEL:
-                    tax += calculateTaxDiesel(co2Emissions);
-                    break;
-                case ALTERNATIVE_FUEL:
-                    tax += calculateTaxAlternativeFuel(co2Emissions);
-                    break;
-                case ELECTRIC:
-                    tax += 0;
-                    break;
+        if (story4Toggle || story5Toggle) {
+            if (isInFirstYear(vehicle)) {
+                tax = calculateFirstYearTax(vehicle);
+            } else {
+                tax = calculateTaxAfterFirstYear(vehicle);
             }
-        }else if(isStory5Toggle() && vehicle.getListPrice() > 40000){
-            tax += addYearlyTaxForRich(vehicle.getFuelType());
+        } else {
+            tax = calculateFirstYearTax(vehicle);
         }
-        System.out.println("Tax for " + vehicle + " is: " + tax);
+
+        return tax;
+    }
+
+    private int calculateTaxAfterFirstYear(Vehicle vehicle) {
+        int tax;
+        int price = vehicle.getListPrice();
+        switch (vehicle.getFuelType()) {
+            case PETROL:
+            case DIESEL:
+                tax = price > 40000 ? 450 : 140;
+                break;
+            case ELECTRIC:
+                tax = price > 40000 ? 310 : 0;
+                break;
+            case ALTERNATIVE_FUEL:
+                tax = price > 40000 ? 440 : 130;
+                break;
+            default:
+                tax = 0;
+        }
+        return tax;
+    }
+
+    private boolean isInFirstYear(Vehicle vehicle) {
+        return (getYear() - vehicle.getDateOfFirstRegistration().getYear() < 1);
+    }
+
+    private int calculateFirstYearTax(Vehicle vehicle) {
+        int tax;
+        int co2Emissions = vehicle.getCo2Emissions();
+        switch (vehicle.getFuelType()) {
+            case PETROL:
+                tax = calculateTaxPetrol(co2Emissions);
+                break;
+            case DIESEL:
+                tax = calculateTaxDiesel(co2Emissions);
+                break;
+            case ALTERNATIVE_FUEL:
+                tax = calculateTaxAlternativeFuel(co2Emissions);
+                break;
+            default:
+                tax = 0;
+        }
         return tax;
     }
 
     public int addYearlyTaxForRich(FuelType fuelType) {
         System.out.println("Adding yearly tax");
         int tax = 0;
-        switch(fuelType) {
+        switch (fuelType) {
             case PETROL:
             case DIESEL:
                 tax += 450;
@@ -66,10 +99,10 @@ public class DefaultTaxCalculator extends TaxCalculator {
         return tax;
     }
 
-    public int calculateTaxPetrol(int co2Emissions){
+    private int calculateTaxPetrol(int co2Emissions) {
         if (co2Emissions == 0) {
             return 0;
-        } else if (co2Emissions >= 1 && co2Emissions <= 50){
+        } else if (co2Emissions >= 1 && co2Emissions <= 50) {
             return 10;
         } else if (co2Emissions >= 51 && co2Emissions <= 75) {
             return 25;
@@ -96,10 +129,10 @@ public class DefaultTaxCalculator extends TaxCalculator {
         }
     }
 
-    public int calculateTaxDiesel(int co2Emissions) {
+    private int calculateTaxDiesel(int co2Emissions) {
         if (co2Emissions == 0) {
             return 0;
-        } else if (co2Emissions >= 1 && co2Emissions <= 50){
+        } else if (co2Emissions >= 1 && co2Emissions <= 50) {
             return 25;
         } else if (co2Emissions >= 51 && co2Emissions <= 75) {
             return 105;
@@ -126,7 +159,7 @@ public class DefaultTaxCalculator extends TaxCalculator {
         }
     }
 
-    public int calculateTaxAlternativeFuel(int co2Emissions) {
+    private int calculateTaxAlternativeFuel(int co2Emissions) {
         int tax;
         if (co2Emissions > 255) {
             tax = 2060;
@@ -150,18 +183,10 @@ public class DefaultTaxCalculator extends TaxCalculator {
             tax = 95;
         } else if (co2Emissions > 50) {
             tax = 15;
-        } else  {
+        } else {
             tax = 0;
         }
 
         return tax;
-    }
-
-    public boolean isStory4Toggle() {
-        return story4Toggle;
-    }
-
-    public boolean isStory5Toggle() {
-        return story5Toggle;
     }
 }

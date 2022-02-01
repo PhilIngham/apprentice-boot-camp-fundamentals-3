@@ -1,13 +1,13 @@
 package tax;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import java.time.LocalDate;
-
 import static java.time.Month.JANUARY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tax.FuelType.PETROL;
+
+import java.time.LocalDate;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class TaxCalculatorPetrolTest {
 
