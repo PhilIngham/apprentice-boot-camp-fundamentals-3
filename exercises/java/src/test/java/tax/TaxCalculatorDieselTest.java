@@ -1,14 +1,13 @@
 package tax;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.time.LocalDate;
-
 import static java.time.Month.JANUARY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tax.FuelType.DIESEL;
+
+import java.time.LocalDate;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class TaxCalculatorDieselTest {
 
@@ -17,7 +16,7 @@ public class TaxCalculatorDieselTest {
 
     @Before
     public void setUp(){
-        taxCalculator = new DefaultTaxCalculator();
+        taxCalculator = new DefaultTaxCalculator(2019);
     }
 
     @Test
