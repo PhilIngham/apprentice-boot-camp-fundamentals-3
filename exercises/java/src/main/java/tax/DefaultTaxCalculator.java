@@ -1,21 +1,60 @@
 package tax;
 
 public class DefaultTaxCalculator extends TaxCalculator {
+    private boolean story4Toggle;
+    private boolean story5Toggle;
+
+    public DefaultTaxCalculator() {
+        super();
+    }
+
+    public DefaultTaxCalculator(int year) {
+        super(year);
+    }
+
+    public DefaultTaxCalculator(boolean story4Toggle, boolean story5Toggle) {
+        super();
+        this.story4Toggle = story4Toggle;
+        this.story5Toggle = story5Toggle;
+    }
+
     @Override
     int calculateTax(Vehicle vehicle) {
 
+        int tax = 0;
         int co2Emissions = vehicle.getCo2Emissions();
         switch (vehicle.getFuelType()) {
             case PETROL:
-                return calculateTaxPetrol(co2Emissions);
+                tax += calculateTaxPetrol(co2Emissions);
+                if(vehicle.getListPrice() > 40000){
+                    tax += 450;
+                }
             case DIESEL:
-                return calculateTaxDiesel(co2Emissions);
+                tax += calculateTaxDiesel(co2Emissions);
+                if(vehicle.getListPrice() > 40000){
+                    tax += 450;
+                }
             case ALTERNATIVE_FUEL:
-                return calculateTaxAlternativeFuel(co2Emissions);
-            default: return 0;
+                tax += calculateTaxAlternativeFuel(co2Emissions);
+                if(vehicle.getListPrice() > 40000){
+                    tax += 440;
+                }
+            case ELECTRIC:
+                tax += 0;
+                if(vehicle.getListPrice() > 40000){
+                    tax += 310;
+                }
         }
+        if(isStory5Toggle() && vehicle.getListPrice() > 40000){
+            addYearlyTax(vehicle.getFuelType());
+        }
+
+        return tax;
     }
 
+    public int addYearlyTax(FuelType fuelType){
+        return 0;
+    }
 
     public int calculateTaxPetrol(int co2Emissions){
         if (co2Emissions == 0) {
@@ -106,5 +145,13 @@ public class DefaultTaxCalculator extends TaxCalculator {
         }
 
         return tax;
+    }
+
+    public boolean isStory4Toggle() {
+        return story4Toggle;
+    }
+
+    public boolean isStory5Toggle() {
+        return story5Toggle;
     }
 }
