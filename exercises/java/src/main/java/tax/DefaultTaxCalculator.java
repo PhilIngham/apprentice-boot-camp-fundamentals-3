@@ -12,29 +12,72 @@ public class DefaultTaxCalculator extends TaxCalculator {
         super(year);
     }
 
-    public DefaultTaxCalculator(boolean story4Toggle, boolean story5Toggle) {
-        super();
+    public DefaultTaxCalculator(int year, boolean story4Toggle, boolean story5Toggle) {
+        super(year);
         this.story4Toggle = story4Toggle;
         this.story5Toggle = story5Toggle;
     }
 
     @Override
     int calculateTax(Vehicle vehicle) {
+        int tax;
 
+        if (story4Toggle) {
+            if (isInFirstYear(vehicle)) {
+                tax = calculateFirstYearTax(vehicle);
+            } else {
+                tax = calculateTaxAfterFirstYear(vehicle);
+            }
+        } else {
+            tax = calculateFirstYearTax(vehicle);
+        }
+
+        return tax;
+    }
+
+    private int calculateTaxAfterFirstYear(Vehicle vehicle) {
+        int tax;
+        switch (vehicle.getFuelType()) {
+            case PETROL:
+            case DIESEL:
+                tax = 140;
+                break;
+            case ELECTRIC:
+                tax = 0;
+                break;
+            case ALTERNATIVE_FUEL:
+                tax = 130;
+                break;
+            default:
+                tax = 0;
+        }
+        return tax;
+    }
+
+	private boolean isInFirstYear(Vehicle vehicle) {
+		return (getYear() - vehicle.getDateOfFirstRegistration().getYear() < 1);
+	}
+
+	private int calculateFirstYearTax(Vehicle vehicle) {
+        int tax;
         int co2Emissions = vehicle.getCo2Emissions();
         switch (vehicle.getFuelType()) {
             case PETROL:
-                return calculateTaxPetrol(co2Emissions);
+                tax = calculateTaxPetrol(co2Emissions);
+                break;
             case DIESEL:
-                return calculateTaxDiesel(co2Emissions);
+                tax = calculateTaxDiesel(co2Emissions);
+                break;
             case ALTERNATIVE_FUEL:
-                return calculateTaxAlternativeFuel(co2Emissions);
-            default: return 0;
+                tax = calculateTaxAlternativeFuel(co2Emissions);
+                break;
+            default:
+                tax = 0;
         }
+        return tax;
     }
 
-
-    public int calculateTaxPetrol(int co2Emissions){
+    private int calculateTaxPetrol(int co2Emissions){
         if (co2Emissions == 0) {
             return 0;
         } else if (co2Emissions >= 1 && co2Emissions <= 50){
@@ -64,7 +107,7 @@ public class DefaultTaxCalculator extends TaxCalculator {
         }
     }
 
-    public int calculateTaxDiesel(int co2Emissions) {
+    private int calculateTaxDiesel(int co2Emissions) {
         if (co2Emissions == 0) {
             return 0;
         } else if (co2Emissions >= 1 && co2Emissions <= 50){
@@ -94,7 +137,7 @@ public class DefaultTaxCalculator extends TaxCalculator {
         }
     }
 
-    public int calculateTaxAlternativeFuel(int co2Emissions) {
+    private int calculateTaxAlternativeFuel(int co2Emissions) {
         int tax;
         if (co2Emissions > 255) {
             tax = 2060;
