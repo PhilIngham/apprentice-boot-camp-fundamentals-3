@@ -1,6 +1,23 @@
 package tax;
 
 public class DefaultTaxCalculator extends TaxCalculator {
+    private boolean story4Toggle;
+    private boolean story5Toggle;
+
+    public DefaultTaxCalculator() {
+        super();
+    }
+
+    public DefaultTaxCalculator(int year) {
+        super(year);
+    }
+
+    public DefaultTaxCalculator(boolean story4Toggle, boolean story5Toggle) {
+        super();
+        this.story4Toggle = story4Toggle;
+        this.story5Toggle = story5Toggle;
+    }
+
     @Override
     int calculateTax(Vehicle vehicle) {
 
