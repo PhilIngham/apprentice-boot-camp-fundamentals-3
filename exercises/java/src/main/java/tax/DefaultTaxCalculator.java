@@ -3,8 +3,6 @@ package tax;
 import java.time.LocalDate;
 
 public class DefaultTaxCalculator extends TaxCalculator {
-    private boolean story4Toggle;
-    private boolean story5Toggle;
 
     public DefaultTaxCalculator() {
         super();
@@ -14,24 +12,13 @@ public class DefaultTaxCalculator extends TaxCalculator {
         super(year);
     }
 
-    public DefaultTaxCalculator(int year, boolean story4Toggle, boolean story5Toggle) {
-        super(year);
-        this.story4Toggle = story4Toggle;
-        this.story5Toggle = story5Toggle;
-    }
-
     @Override
     int calculateTax(Vehicle vehicle) {
         int tax;
-
-        if (story4Toggle || story5Toggle) {
-            if (isInFirstYear(vehicle)) {
-                tax = calculateFirstYearTax(vehicle);
-            } else {
-                tax = calculateTaxAfterFirstYear(vehicle);
-            }
-        } else {
+        if (isInFirstYear(vehicle)) {
             tax = calculateFirstYearTax(vehicle);
+        } else {
+            tax = calculateTaxAfterFirstYear(vehicle);
         }
 
         return tax;
