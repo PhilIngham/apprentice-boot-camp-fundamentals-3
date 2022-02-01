@@ -1,5 +1,7 @@
 package tax;
 
+import java.time.LocalDate;
+
 public class DefaultTaxCalculator extends TaxCalculator {
     private boolean story4Toggle;
     private boolean story5Toggle;
@@ -8,7 +10,7 @@ public class DefaultTaxCalculator extends TaxCalculator {
         super();
     }
 
-    public DefaultTaxCalculator(int year) {
+    public DefaultTaxCalculator(int year){
         super(year);
     }
 
@@ -23,37 +25,45 @@ public class DefaultTaxCalculator extends TaxCalculator {
 
         int tax = 0;
         int co2Emissions = vehicle.getCo2Emissions();
-        switch (vehicle.getFuelType()) {
-            case PETROL:
-                tax += calculateTaxPetrol(co2Emissions);
-                if(vehicle.getListPrice() > 40000){
-                    tax += 450;
-                }
-            case DIESEL:
-                tax += calculateTaxDiesel(co2Emissions);
-                if(vehicle.getListPrice() > 40000){
-                    tax += 450;
-                }
-            case ALTERNATIVE_FUEL:
-                tax += calculateTaxAlternativeFuel(co2Emissions);
-                if(vehicle.getListPrice() > 40000){
-                    tax += 440;
-                }
-            case ELECTRIC:
-                tax += 0;
-                if(vehicle.getListPrice() > 40000){
-                    tax += 310;
-                }
+        if(this.getYear() == vehicle.getDateOfFirstRegistration().getYear()){
+            switch (vehicle.getFuelType()) {
+                case PETROL:
+                    tax += calculateTaxPetrol(co2Emissions);
+                    break;
+                case DIESEL:
+                    tax += calculateTaxDiesel(co2Emissions);
+                    break;
+                case ALTERNATIVE_FUEL:
+                    tax += calculateTaxAlternativeFuel(co2Emissions);
+                    break;
+                case ELECTRIC:
+                    tax += 0;
+                    break;
+            }
+        }else if(isStory5Toggle() && vehicle.getListPrice() > 40000){
+            tax += addYearlyTaxForRich(vehicle.getFuelType());
         }
-        if(isStory5Toggle() && vehicle.getListPrice() > 40000){
-            addYearlyTax(vehicle.getFuelType());
-        }
-
+        System.out.println("Tax for " + vehicle + " is: " + tax);
         return tax;
     }
 
-    public int addYearlyTax(FuelType fuelType){
-        return 0;
+    public int addYearlyTaxForRich(FuelType fuelType) {
+        System.out.println("Adding yearly tax");
+        int tax = 0;
+        switch(fuelType) {
+            case PETROL:
+            case DIESEL:
+                tax += 450;
+                break;
+            case ELECTRIC:
+                tax += 310;
+                break;
+            case ALTERNATIVE_FUEL:
+                tax += 440;
+                break;
+        }
+
+        return tax;
     }
 
     public int calculateTaxPetrol(int co2Emissions){

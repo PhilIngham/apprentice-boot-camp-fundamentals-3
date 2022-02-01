@@ -18,7 +18,7 @@ public class TaxCalculatorAlternativeFuelTest {
 
     @Before
     public void setUp() {
-        taxCalculator = new DefaultTaxCalculator();
+        taxCalculator = new DefaultTaxCalculator(2019);
     }
 
     @Test
